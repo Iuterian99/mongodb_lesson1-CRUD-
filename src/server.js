@@ -5,37 +5,43 @@ const mongoose = require("mongoose");
 app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/mongodb");
 
-const bookSchema = mongoose.Schema({
+const carSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
+    upperCase: true,
   },
-  author: {
+  brand: {
     type: String,
     required: true,
+    upperCase: true,
   },
   price: Number,
 });
 
-const bookModel = mongoose.model("Books", bookSchema);
+const carModel = mongoose.model("cars", carSchema);
 
 app.get("/", async (_, res) => {
-  const foundBooks = await bookModel.find();
-  console.log(foundBooks);
-  res.send("Books");
+  const cars = await carModel.find();
+  console.log(cars);
+  res.send("Cars found!");
 });
 
 app.post("/post", async (req, res) => {
-  try {
-    const { name, author, price } = req.body;
-    const newBook = await bookModel.create({ name, author, price });
-    console.log(newBook);
+  const { name, brand, price } = req.body;
+  const newCar = await carModel.create({ name, brand, price });
+  console.log(newCar);
+  res.send("Car added");
+});
 
-    res.send("added new Book");
-  } catch (err) {
-    console.log(err);
-  }
+app.put("/update", async (req, res) => {
+  const { id, name, brand, price } = req.body;
+  const updateCar = await carModel.findByIdAndUpdate(
+    { _id: id },
+    { name, brand, price }
+  );
+  console.log(updateCar);
+  res.send("car name updated!");
 });
 
 app.listen(9000, console.log(9000));
