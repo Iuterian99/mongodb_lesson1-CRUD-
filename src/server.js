@@ -44,4 +44,11 @@ app.put("/update", async (req, res) => {
   res.send("car name updated!");
 });
 
+app.delete("/delete", async (req, res) => {
+  const { id } = req.body;
+  const deletedCar = await carModel.findByIdAndDelete({ _id: id });
+  console.log(deletedCar);
+  res.send("Car deleted");
+});
+
 app.listen(9000, console.log(9000));
